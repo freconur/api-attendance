@@ -19,7 +19,7 @@ const options = {
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-// app.use(cors(whitelist))
+app.use(cors({origin:'https://www.tuescuelagestiona.online'}))
 
 const corsOptions = {
   origin: 'https://www.tuescuelagestiona.online', // Solo permite solicitudes desde este dominio
@@ -53,7 +53,7 @@ app.get('/', async (req, res) => {
 //     })
 // })
 
-app.post('/crear-docente',cors(corsOptions), async (req, res) => {
+app.post('/crear-docente', async (req, res) => {
   // res.header('Access-Control-Allow-Origin','https://www.tuescuelagestiona.online')
   // res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
 
