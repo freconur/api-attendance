@@ -26,7 +26,7 @@ app.get('/', async (req, res) => {
 })
 
 app.post('/crear-director', async (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'https://tuescuelagestiona.online')
+  res.header('Access-Control-Allow-Origin', 'https://www.tuescuelagestiona.online')
   // res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
   const usuarioRef = db.collection('usuarios').doc(`${req.body.dni}`);
   await usuarioRef.get()
@@ -49,7 +49,7 @@ app.post('/crear-director', async (req, res) => {
 })
 
 app.post('/crear-docente', async (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'https://tuescuelagestiona.online')
+  res.header('Access-Control-Allow-Origin', 'https://www.tuescuelagestiona.online')
   // res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
 
   const usuarioRef = db.collection(`intituciones/${req.body.idInstitution}/usuarios`).doc(`${req.body.dni}`);
@@ -70,7 +70,7 @@ app.post('/crear-docente', async (req, res) => {
     })
 })
 app.post('/borrar-usuario', async (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'https://tuescuelagestiona.online')
+  res.header('Access-Control-Allow-Origin', 'https://www.tuescuelagestiona.online')
   // res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
   const usuarioRef = db.collection('usuarios').doc(`${req.body.dni}`);
   await usuarioRef.get()
