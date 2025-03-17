@@ -5,7 +5,7 @@ const { auth, db } = require('./firebase')
 const app = express()
 const cors = require('cors')
 
-const whitelist = ['http://localhost:3001', 'http://localhost:3000', 'https://attendance-system-blond.vercel.app, https://api-ugel-production.up.railway.app']
+const whitelist = ['http://localhost:3001', 'http://localhost:3000', 'https://www.tuescuelagestiona.online/, https://tuescuelagestiona.online']
 const options = {
   origin: (origin, callback) => {
     if (whitelist.includes(origin) || !origin) {
@@ -26,8 +26,8 @@ app.get('/', async (req, res) => {
 })
 
 app.post('/crear-director', async (req, res) => {
-  // res.header('Access-Control-Allow-Origin', 'https://eva-rouge-zeta.vercel.app')
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
+  res.header('Access-Control-Allow-Origin', 'https://tuescuelagestiona.online')
+  // res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
   const usuarioRef = db.collection('usuarios').doc(`${req.body.dni}`);
   await usuarioRef.get()
     .then(async doc => {
@@ -49,8 +49,8 @@ app.post('/crear-director', async (req, res) => {
 })
 
 app.post('/crear-docente', async (req, res) => {
-  // res.header('Access-Control-Allow-Origin', 'https://eva-rouge-zeta.vercel.app')
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
+  res.header('Access-Control-Allow-Origin', 'https://tuescuelagestiona.online')
+  // res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
 
   const usuarioRef = db.collection(`intituciones/${req.body.idInstitution}/usuarios`).doc(`${req.body.dni}`);
   await usuarioRef.get()
@@ -70,8 +70,8 @@ app.post('/crear-docente', async (req, res) => {
     })
 })
 app.post('/borrar-usuario', async (req, res) => {
-  // res.header('Access-Control-Allow-Origin', 'https://eva-rouge-zeta.vercel.app')
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
+  res.header('Access-Control-Allow-Origin', 'https://tuescuelagestiona.online')
+  // res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
   const usuarioRef = db.collection('usuarios').doc(`${req.body.dni}`);
   await usuarioRef.get()
     .then(async doc => {
