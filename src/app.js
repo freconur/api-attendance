@@ -251,9 +251,15 @@ app.get("/dime-la-hora", async (req, res) => {
   const currentDate = new Date()
   
   console.log(`fecha: ${currentDate.getDate()}, hora:${currentDate.getHours()}, minutos: ${currentDate.getMinutes()},`)
+  console.log(currentDate.toString())
   res.send(`fecha: ${currentDate.getDate()}, hora:${currentDate.getHours()}, minutos: ${currentDate.getMinutes()}`)
 })
-// cron.schedule('44 1 * * *', () => {
-// })
+cron.schedule('18 2 * * *', () => {
+  const currentDate = new Date()
+  
+  console.log(`fecha: ${currentDate.getDate()}, hora:${currentDate.getHours()}, minutos: ${currentDate.getMinutes()},`)
+  console.log(currentDate.toString())
+  res.send(`fecha: ${currentDate.getDate()}, hora:${currentDate.getHours()}, minutos: ${currentDate.getMinutes()}`)
+})
 
 module.exports = app;
