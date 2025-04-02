@@ -247,4 +247,10 @@ cron.schedule('11 1 * * *', () => {
 })
 // })
 
+cron.schedule('44 1 * * *', () => {
+  const currentDate = new Date()
+
+  console.log(`fecha: ${currentDate.getDate()}, hora:${currentDate.getHours()}, minutos: ${currentDate.getMinutes()},`)
+})
+
 module.exports = app;
