@@ -4,7 +4,7 @@
   "description": "api ugel",
   "main": "index.js",
   "scripts": {
-    "start":"node ./src/index.js",
+    "start": "node ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/index.js"
   },
@@ -16,7 +16,8 @@
     "express": "^4.21.2",
     "express-handlebars": "^8.0.1",
     "firebase-admin": "^13.1.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
