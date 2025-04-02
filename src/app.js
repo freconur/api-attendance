@@ -246,11 +246,14 @@ cron.schedule('11 1 * * *', () => {
 
 })
 // })
+app.get("/dime-la-hora", async (req, res) => {
 
-cron.schedule('44 1 * * *', () => {
   const currentDate = new Date()
-
+  
   console.log(`fecha: ${currentDate.getDate()}, hora:${currentDate.getHours()}, minutos: ${currentDate.getMinutes()},`)
+  res.send(`fecha: ${currentDate.getDate()}, hora:${currentDate.getHours()}, minutos: ${currentDate.getMinutes()}`)
 })
+// cron.schedule('44 1 * * *', () => {
+// })
 
 module.exports = app;
