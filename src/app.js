@@ -84,110 +84,111 @@ app.post("/crear-docente", async (req, res) => {
   });
 });
 
-cron.schedule('15 16 * * *', () => {
-// app.get("/update-attendance", async (req, res) => {
-  // el id de la institucion por ahora sera estitico pero cuando se agregen mas colegios se hara dinamico
-  //crearemos una nueva instancia para la fecha actual
-  const currentDate = new Date();
-  //hago un get de todos los estudiantes de la institucion
-  if (days[currentDate.getDay()] !== 'sabado' || days[currentDate.getDay()] !== 'domingo') {
+// cron.schedule('15 16 * * *', () => {
+// // app.get("/update-attendance", async (req, res) => {
+//   // el id de la institucion por ahora sera estitico pero cuando se agregen mas colegios se hara dinamico
+//   //crearemos una nueva instancia para la fecha actual
+//   const currentDate = new Date();
+//   //hago un get de todos los estudiantes de la institucion
+//   if (days[currentDate.getDay()] !== 'sabado' || days[currentDate.getDay()] !== 'domingo') {
 
-    const usuarioRef = db.collection(
-      `/intituciones/l2MjRJSZU2K6Qdyc3lUz/students`
-    );
+//     const usuarioRef = db.collection(
+//       `/intituciones/l2MjRJSZU2K6Qdyc3lUz/students`
+//     );
 
-    const newPromise = new Promise(async (resolve, recject) => {
-      try {
-        await usuarioRef.get().then((rtaEstudiantes) => {
-          //creo un array vacio para poder almacenar todos los datos obtenidos del get
-          console.log('rtaEstudiantes', rtaEstudiantes)
-          const arrayEstudiantes = [];
-          //creamos un id con el nombre de index para poder identificar el ultimo elemento del array
-          let index = 0
-          rtaEstudiantes.forEach((doc) => {
-            arrayEstudiantes.push({ ...doc.data(), id: doc.id });
-            // console.log('rtaEstudiantes.size', rtaEstudiantes.size)
-            // console.log('index', index)
-            index = index + 1
-            if (rtaEstudiantes.size === index) {
-              console.log('aqui quedamos')
-              resolve(arrayEstudiantes)
-            }
-          });
-        });
-      } catch (error) {
-        console.log("error", error);
-        recject();
-      }
-    });
+//     const newPromise = new Promise(async (resolve, recject) => {
+//       try {
+//         await usuarioRef.get().then((rtaEstudiantes) => {
+//           //creo un array vacio para poder almacenar todos los datos obtenidos del get
+//           console.log('rtaEstudiantes', rtaEstudiantes)
+//           const arrayEstudiantes = [];
+//           //creamos un id con el nombre de index para poder identificar el ultimo elemento del array
+//           let index = 0
+//           rtaEstudiantes.forEach((doc) => {
+//             arrayEstudiantes.push({ ...doc.data(), id: doc.id });
+//             // console.log('rtaEstudiantes.size', rtaEstudiantes.size)
+//             // console.log('index', index)
+//             index = index + 1
+//             if (rtaEstudiantes.size === index) {
+//               console.log('aqui quedamos')
+//               resolve(arrayEstudiantes)
+//             }
+//           });
+//         });
+//       } catch (error) {
+//         console.log("error", error);
+//         recject();
+//       }
+//     });
 
 
-    const validarAsistenciaPromise = new Promise((resolve, reject) => {
+//     const validarAsistenciaPromise = new Promise((resolve, reject) => {
 
-      let index = 0
-      try {
-        newPromise.then(rtaDeEstudiantes => {
-          //una vez obtenido los id de todos los estudiantes de la institucion procederemos a verificar si tienen registro de asistencia tanto de entrada como de salida
-          const arrayEstudiantesData = []
-          rtaDeEstudiantes.forEach(async (estudiante) => {
-            const asistenciaPath = `/intituciones/l2MjRJSZU2K6Qdyc3lUz/attendance-student/${estudiante.dni}/${currentDate.getFullYear()}/${months[currentDate.getMonth()]}/${months[currentDate.getMonth()]}`;
-            // const asistenciaPath = `/intituciones/l2MjRJSZU2K6Qdyc3lUz/attendance-student/${estudiante.dni}/${currentDate.getFullYear()}/marzo/marzo`; //esto esta hardcodeado para poder actualizar los datos del mes de marzo
-            const asistenciaRef = db
-              .collection(asistenciaPath)
-              .doc(`${currentDate.getDate()}`);
-            // .doc(`${currentDate.getDate()}`);
+//       let index = 0
+//       try {
+//         newPromise.then(rtaDeEstudiantes => {
+//           //una vez obtenido los id de todos los estudiantes de la institucion procederemos a verificar si tienen registro de asistencia tanto de entrada como de salida
+//           const arrayEstudiantesData = []
+//           rtaDeEstudiantes.forEach(async (estudiante) => {
+//             const asistenciaPath = `/intituciones/l2MjRJSZU2K6Qdyc3lUz/attendance-student/${estudiante.dni}/${currentDate.getFullYear()}/${months[currentDate.getMonth()]}/${months[currentDate.getMonth()]}`;
+//             // const asistenciaPath = `/intituciones/l2MjRJSZU2K6Qdyc3lUz/attendance-student/${estudiante.dni}/${currentDate.getFullYear()}/marzo/marzo`; //esto esta hardcodeado para poder actualizar los datos del mes de marzo
+//             const asistenciaRef = db
+//               .collection(asistenciaPath)
+//               .doc(`${currentDate.getDate()}`);
+//             // .doc(`${currentDate.getDate()}`);
 
-            await asistenciaRef.get()
-              .then(async (asistencia) => {
-                // console.log('asistencia.data()', asistencia.data())
-                if (asistencia.exists) {
-                  if (
-                    asistencia.data().arrivalTime === undefined &&
-                    asistencia.data().departure === undefined
-                  ) {
-                    index = index + 1
-                    // console.log("estudiante ha faltado, se le pondra como falta para esta fecha");
-                    arrayEstudiantesData.push({ ...asistencia.data(), id: estudiante.dni, llegada: 'tarde' })
-                    const rutaDeNuevoMes = db.collection(asistenciaPath).doc(`${currentDate.getDate()}`);
+//             await asistenciaRef.get()
+//               .then(async (asistencia) => {
+//                 // console.log('asistencia.data()', asistencia.data())
+//                 if (asistencia.exists) {
+//                   if (
+//                     asistencia.data().arrivalTime === undefined &&
+//                     asistencia.data().departure === undefined
+//                   ) {
+//                     index = index + 1
+//                     // console.log("estudiante ha faltado, se le pondra como falta para esta fecha");
+//                     arrayEstudiantesData.push({ ...asistencia.data(), id: estudiante.dni, llegada: 'tarde' })
+//                     const rutaDeNuevoMes = db.collection(asistenciaPath).doc(`${currentDate.getDate()}`);
 
-                    await rutaDeNuevoMes.set({
-                      // arrivalTime: 'falto',
-                      falta: true
-                    }, { merge: true });
-                    if (rtaDeEstudiantes.length === index) {
-                      resolve(true)
-                    }
-                  } else {
-                    index = index + 1
-                    // console.log(`dni:${asistencia.data().dni}, ingreso: ${asistencia.data()}`)
-                    arrayEstudiantesData.push({ ...asistencia.data(), id: estudiante.dni, llegada: 'temprano' })
-                    if (rtaDeEstudiantes.length === index) {
-                      resolve(true)
-                    }
-                  }
-                } else {
-                  console.log("estudiante no existe");
-                }
+//                     await rutaDeNuevoMes.set({
+//                       // arrivalTime: 'falto',
+//                       falta: true
+//                     }, { merge: true });
+//                     if (rtaDeEstudiantes.length === index) {
+//                       resolve(true)
+//                     }
+//                   } else {
+//                     index = index + 1
+//                     // console.log(`dni:${asistencia.data().dni}, ingreso: ${asistencia.data()}`)
+//                     arrayEstudiantesData.push({ ...asistencia.data(), id: estudiante.dni, llegada: 'temprano' })
+//                     if (rtaDeEstudiantes.length === index) {
+//                       resolve(true)
+//                     }
+//                   }
+//                 } else {
+//                   console.log("estudiante no existe");
+//                 }
 
-              })
-          });
+//               })
+//           });
 
-        })
-      } catch (error) {
-        console.log('error', error)
-        reject()
-      }
-    })
-    validarAsistenciaPromise.then(response => {
-      // console.log('response', response.filter(a => a.llegada === 'tarde'))
+//         })
+//       } catch (error) {
+//         console.log('error', error)
+//         reject()
+//       }
+//     })
+//     validarAsistenciaPromise.then(response => {
+//       // console.log('response', response.filter(a => a.llegada === 'tarde'))
 
-      // response === true && res.send("holiwis");
-      response === true && console.log("holiwis");
-    })
-  }
-});
+//       // response === true && res.send("holiwis");
+//       response === true && console.log("holiwis");
+//     })
+//   }
+// });
 // })
 
+//SE AGREGO LA VARIABLE DE ENTORNO TZ PARA PODER MANEJAR LA ZONA HORARIA LOCAL
 
 // app.get("/create-route", async (req, res) => {
 // el id de la institucion por ahora sera estitico pero cuando se agregen mas colegios se hara dinamico
@@ -235,6 +236,7 @@ cron.schedule('11 1 * * *', () => {
 
         await rutaDeNuevoMes.set({
           // active: true
+          falta:true
         }, { merge: true });
       })
       if (estudiantes.length === index) {
