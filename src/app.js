@@ -193,7 +193,64 @@ app.post("/crear-docente", async (req, res) => {
 // app.get("/create-route", async (req, res) => {
 // el id de la institucion por ahora sera estitico pero cuando se agregen mas colegios se hara dinamico
 //crearemos una nueva instancia para la fecha actual
+
+//CREAREMOS UNA FUNCION QUE NOS AYUDARA A AUTOCOMPLETAR LA ASISTENCIA DE INGRESO POR SI NO SE REGISTRO, SOLO PARA LOS ESTUDIANTES QUE REGISTRARON UNA SALIDA
+cron.schedule('30 17 * * *', () => {
+// app.get("/pruebita", async (req, res) => {
+  const usuarioRef = db.collection(
+    `/intituciones/l2MjRJSZU2K6Qdyc3lUz/students`
+  );
+  const newPromise = new Promise(async (resolve, recject) => {
+    try {
+      await usuarioRef.get().then((rtaEstudiantes) => {
+        //creo un array vacio para poder almacenar todos los datos obtenidos del get
+        console.log('rtaEstudiantes', rtaEstudiantes)
+        const arrayEstudiantes = [];
+        //creamos un id con el nombre de index para poder identificar el ultimo elemento del array
+        let index = 0
+        rtaEstudiantes.forEach((doc) => {
+          arrayEstudiantes.push({ ...doc.data(), id: doc.id });
+          // console.log('rtaEstudiantes.size', rtaEstudiantes.size)
+          // console.log('index', index)
+          index = index + 1
+          if (rtaEstudiantes.size === index) {
+            console.log('aqui quedamos')
+            resolve(arrayEstudiantes)
+          }
+        });
+      });
+    } catch (error) {
+      console.log("error", error);
+      recject();
+    }
+  });
+
+
+  newPromise.then(response => {
+    console.log('response', response)
+    //tengo que validar si el estudiante tiene registrado una salida en su asistencia, si es asi se autocompleta el ingreso con la hora minima de 7:30am
+    const currentDate = new Date()
+    let index = 0
+    response.forEach(async (estudiante) => {
+      index = index + 1
+      const asistenciaPathRef = db.collection(`/intituciones/l2MjRJSZU2K6Qdyc3lUz/attendance-student/${estudiante.dni}/${currentDate.getFullYear()}/${months[currentDate.getMonth()]}/${months[currentDate.getMonth()]}`)
+
+      const cityRef = asistenciaPathRef.doc(`${currentDate.getDate()}`);
+      const doc = await cityRef.get();
+      if (doc.exists) {
+        if (doc.data().arrivalTime === undefined && doc.data().departure) {
+          await cityRef.set({
+            arrivalTime: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 7, 30, 0)
+          }, { merge: true });
+        }
+      }
+    })
+    if (response.length === index) { res.send('terminamos') }
+  })
+})
+
 cron.schedule('11 1 * * *', () => {
+  //con esta funcion creo la ruta y agrego el estado de asistencia por defecto a falta
   const currentDate = new Date();
   if (days[currentDate.getDay()] !== 'sabado' || days[currentDate.getDay()] !== 'domingo') {
     //hago un get de todos los estudiantes de la institucion
@@ -236,7 +293,7 @@ cron.schedule('11 1 * * *', () => {
 
         await rutaDeNuevoMes.set({
           // active: true
-          falta:true
+          falta: true
         }, { merge: true });
       })
       if (estudiantes.length === index) {
@@ -251,14 +308,14 @@ cron.schedule('11 1 * * *', () => {
 app.get("/dime-la-hora", async (req, res) => {
 
   const currentDate = new Date()
-  
+
   console.log(`fecha: ${currentDate.getDate()}, hora:${currentDate.getHours()}, minutos: ${currentDate.getMinutes()},`)
   console.log(currentDate.toString())
   res.send(`fecha: ${currentDate.getDate()}, hora:${currentDate.getHours()}, minutos: ${currentDate.getMinutes()}`)
 })
 cron.schedule('18 2 * * *', () => {
   const currentDate = new Date()
-  
+
   console.log(`fecha: ${currentDate.getDate()}, hora:${currentDate.getHours()}, minutos: ${currentDate.getMinutes()},`)
   console.log(currentDate.toString())
   res.send(`fecha: ${currentDate.getDate()}, hora:${currentDate.getHours()}, minutos: ${currentDate.getMinutes()}`)
