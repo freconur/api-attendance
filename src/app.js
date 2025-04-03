@@ -195,7 +195,7 @@ app.post("/crear-docente", async (req, res) => {
 //crearemos una nueva instancia para la fecha actual
 
 //CREAREMOS UNA FUNCION QUE NOS AYUDARA A AUTOCOMPLETAR LA ASISTENCIA DE INGRESO POR SI NO SE REGISTRO, SOLO PARA LOS ESTUDIANTES QUE REGISTRARON UNA SALIDA
-cron.schedule('30 17 * * *', () => {
+cron.schedule('44 17 * * *', () => {
 // app.get("/pruebita", async (req, res) => {
   const usuarioRef = db.collection(
     `/intituciones/l2MjRJSZU2K6Qdyc3lUz/students`
@@ -245,7 +245,7 @@ cron.schedule('30 17 * * *', () => {
         }
       }
     })
-    if (response.length === index) { res.send('terminamos') }
+    if (response.length === index) { console.log('terminamos') }
   })
 })
 
